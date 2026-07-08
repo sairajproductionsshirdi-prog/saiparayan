@@ -106,6 +106,7 @@ section{padding:78px 0;position:relative}
   background:transparent;border:none;padding:6px 12px;border-radius:999px;cursor:pointer;transition:.15s
 }
 .lang-toggle button.active{background:var(--gold);color:var(--maroon-deep)}
+.lang-mobile{display:none}
 .menu-btn{display:none;background:transparent;border:none;color:var(--cream);cursor:pointer}
 .menu-btn svg{width:28px;height:28px}
 
@@ -405,6 +406,8 @@ footer{background:linear-gradient(180deg,var(--maroon),var(--maroon-deep));color
   .f-grid{grid-template-columns:1fr;gap:24px;text-align:center}
   .topnav{display:none}
   .menu-btn{display:block}
+  .lang-mobile{display:flex;margin-left:0;margin-right:6px}
+  .lang-mobile button{padding:5px 9px;font-size:.82rem}
 }
 @media(max-width:680px){
   body{font-size:1.06rem}
