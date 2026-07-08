@@ -405,9 +405,11 @@ footer{background:linear-gradient(180deg,var(--maroon),var(--maroon-deep));color
   .venue-wrap{grid-template-columns:1fr}
   .f-grid{grid-template-columns:1fr;gap:24px;text-align:center}
   .topnav{display:none}
-  .menu-btn{display:block}
-  .lang-mobile{display:flex;margin-left:0;margin-right:6px}
-  .lang-mobile button{padding:5px 9px;font-size:.82rem}
+  .menu-btn{display:block;order:2}
+  .topbar .wrap{height:auto;flex-wrap:wrap;padding:8px 0;row-gap:8px}
+  .brand{flex:1;order:1}
+  .lang-mobile{display:flex;order:3;flex-basis:100%;justify-content:center;margin:0}
+  .lang-mobile button{padding:5px 16px;font-size:.82rem}
 }
 @media(max-width:680px){
   body{font-size:1.06rem}
