@@ -4,7 +4,10 @@ const CONFIG = {
   eventStart: "2026-08-13T07:00:00+05:30",
 
   // Apps Script Web App URL — नोंदणी थेट Google Sheet मध्ये जाते (सर्वोत्तम पर्याय)
-  webAppUrl: "https://script.google.com/macros/s/AKfycbwwT7XfrowmMXi32TExI1UbLzndJYepd8FWND3JZLLK6laRVVPND_FC4MMRcNA3_UIJ/exec",
+  webAppUrl: "https://script.google.com/macros/s/AKfycbx7Tk_O6fBnybCIeq-SuSxwt_cXlYbdLRD63bumY-VdixTT9fZiVkUGRSjNJiYOrnJrRw/exec",
+
+  // Zoho Flow incoming webhook — नोंदणी Zoho मध्ये सुद्धा जाते (Google Sheet सोबतच)
+  zohoWebhook: "https://flow.zoho.in/60077387682/flow/webhook/incoming?zapikey=1001.a84170dd9ffaf66abde108a54b68fcda.b1ec0190fb7535b85887b434a6cc7e3d&isdebug=false",
 
   /* ---- Google Form → Google Sheet integration (optional) ----
      action:"" राहिल्यास फक्त WhatsApp चालेल.
@@ -236,6 +239,14 @@ function submitToWebApp(d){
   });
   return fetch(CONFIG.webAppUrl, {method:'POST', mode:'no-cors', body}).catch(()=>{});
 }
+function submitToZoho(d){
+  const body = new URLSearchParams({
+    seva:d.seva, naam:d.naam, vay:d.vay, ling:d.ling, mobile:d.mobile,
+    whatsapp:d.whatsapp, gaav:d.gaav, sahbhag:d.sahbhag, kalavdhi:d.kalavdhi,
+    divas:d.divas, purv:d.purv, granth:d.granth
+  });
+  return fetch(CONFIG.zohoWebhook, {method:'POST', mode:'no-cors', body}).catch(()=>{});
+}
 function resetPanel(panel){
   panel.querySelectorAll('input').forEach(i=>{ if(i.type==='checkbox') i.checked=false; else i.value=''; });
   panel.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
@@ -266,19 +277,10 @@ document.addEventListener('click', e=>{
     purv:get('पूर्वसहभाग'), granth:get('ग्रंथ')
   };
 
-  const gf = CONFIG.googleForm;
-  if(CONFIG.webAppUrl){
-    submitToWebApp(data);
+  if(CONFIG.zohoWebhook){
+    submitToZoho(data);
     showToast("ॐ साई राम, आपली माहिती आयोजकांकडे नोंदवली गेली आहे.");
     resetPanel(panel);
-    if(gf && gf.alsoWhatsApp) window.open(waBase+"?text="+encodeURIComponent(waMessage(data)), "_blank");
-    return;
-  }
-  if(gf && gf.action){
-    submitToGoogle(data);
-    showToast("ॐ साई राम, आपली माहिती आयोजकांकडे नोंदवली गेली आहे.");
-    resetPanel(panel);
-    if(gf.alsoWhatsApp) window.open(waBase+"?text="+encodeURIComponent(waMessage(data)), "_blank");
     return;
   }
   // fallback → WhatsApp
