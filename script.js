@@ -4,7 +4,7 @@ const CONFIG = {
   eventStart: "2026-08-13T07:00:00+05:30",
 
   // Apps Script Web App URL — नोंदणी थेट Google Sheet मध्ये जाते (सर्वोत्तम पर्याय)
-  webAppUrl: "https://script.google.com/macros/s/AKfycbyIU8GwVt9SUf1IgFMfD6BwTRmtsPYpmiYznR8Agpjc75ui9cfGJJtJTlzJdYB0kDWj/exec",
+  webAppUrl: "https://script.google.com/macros/s/AKfycbwwT7XfrowmMXi32TExI1UbLzndJYepd8FWND3JZLLK6laRVVPND_FC4MMRcNA3_UIJ/exec",
 
   /* ---- Google Form → Google Sheet integration (optional) ----
      action:"" राहिल्यास फक्त WhatsApp चालेल.
