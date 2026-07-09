@@ -240,12 +240,13 @@ function submitToWebApp(d){
   return fetch(CONFIG.webAppUrl, {method:'POST', mode:'no-cors', body}).catch(()=>{});
 }
 function submitToZoho(d){
-  const body = new URLSearchParams({
+  const params = new URLSearchParams({
     seva:d.seva, naam:d.naam, vay:d.vay, ling:d.ling, mobile:d.mobile,
     whatsapp:d.whatsapp, gaav:d.gaav, sahbhag:d.sahbhag, kalavdhi:d.kalavdhi,
     divas:d.divas, purv:d.purv, granth:d.granth
   });
-  return fetch(CONFIG.zohoWebhook, {method:'POST', mode:'no-cors', body}).catch(()=>{});
+  const sep = CONFIG.zohoWebhook.indexOf('?') === -1 ? '?' : '&';
+  return fetch(CONFIG.zohoWebhook + sep + params.toString(), {method:'POST', mode:'no-cors'}).catch(()=>{});
 }
 function resetPanel(panel){
   panel.querySelectorAll('input').forEach(i=>{ if(i.type==='checkbox') i.checked=false; else i.value=''; });
