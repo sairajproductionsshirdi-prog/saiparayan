@@ -246,7 +246,8 @@ function submitToZoho(d){
     divas:d.divas, purv:d.purv, granth:d.granth
   });
   const sep = CONFIG.zohoWebhook.indexOf('?') === -1 ? '?' : '&';
-  return fetch(CONFIG.zohoWebhook + sep + params.toString(), {method:'POST', mode:'no-cors'}).catch(()=>{});
+  // send data in BOTH the body (payload) and the query string for max Zoho compatibility
+  return fetch(CONFIG.zohoWebhook + sep + params.toString(), {method:'POST', mode:'no-cors', body: params}).catch(()=>{});
 }
 function resetPanel(panel){
   panel.querySelectorAll('input').forEach(i=>{ if(i.type==='checkbox') i.checked=false; else i.value=''; });
