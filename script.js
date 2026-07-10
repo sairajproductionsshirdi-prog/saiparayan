@@ -1,7 +1,7 @@
 /* ================= CONFIG — बदला ================= */
 const CONFIG = {
-  whatsapp: "919822285080",          // नाट्य रसिक मंच WhatsApp — floating button / संपर्क
-  regWhatsApp: "919354001941",       // नोंदणी WhatsApp Business — सर्व नोंदणी येथे पाठवली जाते
+  whatsapp: "917498585080",          // नाट्य रसिक मंच WhatsApp — floating button / संपर्क
+  regWhatsApp: "917498585080",       // नोंदणी WhatsApp Business — सर्व नोंदणी येथे पाठवली जाते
   eventStart: "2026-08-13T07:00:00+05:30"
 };
 
