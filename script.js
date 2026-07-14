@@ -54,7 +54,7 @@ function setLang(lang){ applyLang(lang); }
 document.querySelectorAll('[data-set-lang]').forEach(b=>{
   b.addEventListener('click',()=>setLang(b.getAttribute('data-set-lang')));
 });
-setLang('mr');
+setLang('en');
 
 /* ================= WHATSAPP LINKS ================= */
 const waBase = "https://wa.me/"+CONFIG.whatsapp;
