@@ -399,6 +399,18 @@ footer{background:linear-gradient(180deg,var(--maroon),var(--maroon-deep));color
 .reg-pop-close{position:absolute;top:12px;right:12px;width:42px;height:42px;border-radius:50%;border:1.5px solid var(--gold);background:var(--cream);color:var(--maroon);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .reg-pop-close:hover{background:var(--maroon);color:var(--cream);transform:rotate(90deg)}
 .reg-pop-close svg{width:22px;height:22px}
+.conf-modal{position:fixed;inset:0;z-index:120;background:rgba(74,19,15,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:22px}
+.conf-modal.open{display:flex}
+.conf-box{position:relative;background:linear-gradient(165deg,var(--cream),var(--parchment));border:1.5px solid var(--gold);border-radius:22px;padding:34px 30px 28px;max-width:410px;width:100%;text-align:center;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);animation:popRise .35s cubic-bezier(.2,.8,.2,1)}
+.conf-om{color:var(--saffron);font-family:var(--f-display);font-size:1.05rem;margin-bottom:8px}
+.conf-tick{width:58px;height:58px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--maroon-deep);display:flex;align-items:center;justify-content:center;font-size:1.9rem;font-weight:700}
+.conf-box h3{font-family:var(--f-display);color:var(--maroon);font-size:1.55rem;font-weight:400;margin-bottom:4px}
+.conf-box p{font-family:var(--f-ui);color:var(--ink-soft);font-size:.92rem;margin-bottom:10px}
+.conf-regno{background:var(--maroon);border-radius:12px;padding:12px;margin:14px 0}
+.conf-regno span{display:block;font-size:.78rem;color:rgba(244,233,212,.75);font-family:var(--f-ui);margin-bottom:2px}
+.conf-regno b{font-family:var(--f-display);font-size:1.7rem;letter-spacing:.05em;color:var(--gold-bright)}
+.conf-note{font-size:.84rem !important;color:var(--maroon) !important}
+.conf-box .btn{width:100%;margin-top:8px}
 
 /* ===================== RESPONSIVE ===================== */
 @media(max-width:900px){

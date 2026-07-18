@@ -117,12 +117,12 @@
       <table>
         <thead>
           <tr>
-            <th>#</th><th>दिनांक व वेळ</th><th>सेवा प्रकार</th><th>नाव</th><th>वय</th><th>लिंग</th>
+            <th>#</th><th>नोंदणी क्र.</th><th>दिनांक व वेळ</th><th>सेवा प्रकार</th><th>नाव</th><th>वय</th><th>लिंग</th>
             <th>मोबाईल</th><th>WhatsApp</th><th>गाव/शहर</th><th>सहभाग</th>
             <th>वीणा कालावधी</th><th>उपलब्ध दिवस</th><th>पूर्वी सहभाग</th><th>ग्रंथ</th>
           </tr>
         </thead>
-        <tbody id="rows"><tr><td colspan="14" class="loading">डेटा लोड होत आहे…</td></tr></tbody>
+        <tbody id="rows"><tr><td colspan="15" class="loading">डेटा लोड होत आहे…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -187,7 +187,7 @@
   document.getElementById('refreshBtn').addEventListener('click', loadData);
 
   function loadData(){
-    document.getElementById('rows').innerHTML = '<tr><td colspan="14" class="loading">डेटा लोड होत आहे…</td></tr>';
+    document.getElementById('rows').innerHTML = '<tr><td colspan="15" class="loading">डेटा लोड होत आहे…</td></tr>';
     firebase.firestore().collection(COL).orderBy('ts','desc').get()
       .then(function(snap){
         all = [];
@@ -195,7 +195,7 @@
         buildFilters(); render();
       })
       .catch(function(err){
-        document.getElementById('rows').innerHTML = '<tr><td colspan="14" class="empty">लोड करता आले नाही: ' + (err && err.message ? err.message : err) + '</td></tr>';
+        document.getElementById('rows').innerHTML = '<tr><td colspan="15" class="empty">लोड करता आले नाही: ' + (err && err.message ? err.message : err) + '</td></tr>';
       });
   }
 
@@ -215,7 +215,7 @@
     return all.filter(function(r){
       if(sv && r.seva !== sv) return false;
       if(!q) return true;
-      return [r.naam,r.mobile,r.whatsapp,r.gaav].some(function(x){ return (x||'').toLowerCase().indexOf(q) !== -1; });
+      return [r.regNo,r.naam,r.mobile,r.whatsapp,r.gaav].some(function(x){ return (x||'').toLowerCase().indexOf(q) !== -1; });
     });
   }
 
@@ -235,11 +235,12 @@
 
     // rows
     var tb = document.getElementById('rows');
-    if(!data.length){ tb.innerHTML = '<tr><td colspan="14" class="empty">कोणतीही नोंदणी नाही.</td></tr>'; return; }
+    if(!data.length){ tb.innerHTML = '<tr><td colspan="15" class="empty">कोणतीही नोंदणी नाही.</td></tr>'; return; }
     var html = '';
     data.forEach(function(r,i){
       html += '<tr>'
         + '<td>'+(i+1)+'</td>'
+        + '<td><b>'+(r.regNo||'')+'</b></td>'
         + '<td>'+fmtTs(r.ts)+'</td>'
         + '<td><span class="seva-tag">'+(r.seva||'')+'</span></td>'
         + '<td>'+(r.naam||'')+'</td>'
@@ -261,10 +262,10 @@
   // ---------- EXPORT ----------
   document.getElementById('exportBtn').addEventListener('click', function(){
     var data = filtered();
-    var head = ["दिनांक","सेवा प्रकार","नाव","वय","लिंग","मोबाईल","WhatsApp","गाव/शहर","सहभाग","वीणा कालावधी","उपलब्ध दिवस","पूर्वी सहभाग","ग्रंथ"];
+    var head = ["नोंदणी क्र.","दिनांक","सेवा प्रकार","नाव","वय","लिंग","मोबाईल","WhatsApp","गाव/शहर","सहभाग","वीणा कालावधी","उपलब्ध दिवस","पूर्वी सहभाग","ग्रंथ"];
     var lines = [head.join(",")];
     data.forEach(function(r){
-      var row = [fmtTs(r.ts)].concat(FIELDS.map(function(f){ return r[f]; }));
+      var row = [r.regNo, fmtTs(r.ts)].concat(FIELDS.map(function(f){ return r[f]; }));
       lines.push(row.map(function(v){ v=(v==null?'':String(v)); return '"'+v.replace(/"/g,'""')+'"'; }).join(","));
     });
     var blob = new Blob(["\ufeff"+lines.join("\n")], {type:"text/csv;charset=utf-8;"});

@@ -13,6 +13,8 @@ Object.assign(I18N.hi, {"ॐ साई राम! उघडलेल्या Wh
 Object.assign(I18N.en, {"ॐ साई राम! उघडलेल्या WhatsApp मध्ये 'Send' दाबा — नोंदणी पूर्ण होईल.": "Om Sai Ram! Tap 'Send' in the opened WhatsApp to complete your registration."});
 Object.assign(I18N.hi, {"नोंदणी फी जमा केल्यानंतरच आपल्याला ओळखपत्र, लेस इत्यादी साहित्य दिले जाईल.": "पंजीकरण शुल्क जमा करने के बाद ही आपको पहचान-पत्र, लेस आदि सामग्री दी जाएगी।"});
 Object.assign(I18N.en, {"नोंदणी फी जमा केल्यानंतरच आपल्याला ओळखपत्र, लेस इत्यादी साहित्य दिले जाईल.": "Your ID card, lace, etc. will be given only after the registration fee is paid."});
+Object.assign(I18N.hi, {"ॐ साई राम! आपली नोंदणी यशस्वीरीत्या झाली आहे. 🙏": "ॐ साई राम! आपका पंजीकरण सफलतापूर्वक हो गया है। 🙏", "नोंदणी पाठवताना अडचण आली. कृपया पुन्हा प्रयत्न करा.": "पंजीकरण भेजते समय समस्या हुई। कृपया पुनः प्रयास करें।"});
+Object.assign(I18N.en, {"ॐ साई राम! आपली नोंदणी यशस्वीरीत्या झाली आहे. 🙏": "Om Sai Ram! Your registration was successful. 🙏", "नोंदणी पाठवताना अडचण आली. कृपया पुन्हा प्रयत्न करा.": "There was a problem submitting. Please try again."});
 window.__lang = 'mr';
 const _oT = new WeakMap(), _oP = new WeakMap();
 const _DEV='०१२३४५६७८९';
@@ -188,8 +190,26 @@ document.addEventListener('click', e=>{
 /* submit → Google Sheet (if configured) else WhatsApp */
 const labels = {purush:"पुरुष वाचक",mahila:"महिला वाचक",veena:"अखंड वीणा सेवा",seva:"स्वयंसेवक"};
 
+function genRegNo(){
+  var t = Date.now().toString(36).toUpperCase().slice(-5);
+  var r = Math.floor(Math.random()*36).toString(36).toUpperCase();
+  return "SAI26-" + t + r;
+}
+function showConfirm(regNo){
+  var m = document.getElementById('confModal');
+  if(!m){ showToast("ॐ साई राम! नोंदणी यशस्वी. क्रमांक: " + regNo); return; }
+  document.getElementById('confRegNo').textContent = regNo;
+  m.classList.add('open');
+}
+(function(){
+  var cm = document.getElementById('confModal'); if(!cm) return;
+  var cc = document.getElementById('confClose');
+  if(cc) cc.addEventListener('click', function(){ cm.classList.remove('open'); });
+  cm.addEventListener('click', function(e){ if(e.target===cm) cm.classList.remove('open'); });
+})();
 function waMessage(d){
   let m = `॥ ॐ साई राम ॥\n*श्री साईसच्चरित पारायण सोहळा २०२६ — नोंदणी*\n\n`;
+  if(d.regNo) m += `*नोंदणी क्र:* ${d.regNo}\n`;
   m += `*सेवा प्रकार:* ${d.seva}\n*नाव:* ${d.naam}\n*वय:* ${d.vay}\n*लिंग:* ${d.ling}\n*मोबाईल:* ${d.mobile}\n`;
   if(d.whatsapp) m += `*WhatsApp:* ${d.whatsapp}\n`;
   m += `*गाव/शहर:* ${d.gaav}\n*सहभाग:* ${d.sahbhag}\n`;
@@ -221,22 +241,29 @@ document.addEventListener('click', e=>{
   if(!rulesOk || !itemsOk || !feeOk){ showToast("कृपया सर्व अटी मान्य करा (चेकबॉक्स)."); return; }
 
   const data = {
+    regNo: genRegNo(),
     seva: labels[type], naam:name, vay:age, ling:get('लिंग'),
     mobile:mob, whatsapp:get('WhatsApp'), gaav:city, sahbhag:get('सहभाग'),
     kalavdhi: type==='veena' ? get('कालावधी') : '', divas: days.join(', '),
     purv:get('पूर्वसहभाग'), granth:get('ग्रंथ')
   };
 
-  // Save to Firebase for the admin dashboard (silent, non-blocking)
+  // Save to Firebase (admin dashboard) — primary destination
   try {
     if (window.firebase && firebase.apps && firebase.apps.length) {
       firebase.firestore().collection('registrations').add(
         Object.assign({}, data, { ts: new Date().toISOString() })
-      ).catch(function(){});
+      ).then(function(){
+        showConfirm(data.regNo);
+        resetPanel(panel);
+      }).catch(function(err){
+        showToast("नोंदणी पाठवताना अडचण आली. कृपया पुन्हा प्रयत्न करा.");
+        console.error(err);
+      });
+      return;
     }
   } catch(e){}
-
-  // नोंदणी WhatsApp Business वर पाठवा (9354001941)
+  // Fallback only if Firebase is unavailable → WhatsApp
   const regWa = "https://wa.me/" + CONFIG.regWhatsApp;
   window.open(regWa + "?text=" + encodeURIComponent(waMessage(data)), "_blank");
   showToast("ॐ साई राम! उघडलेल्या WhatsApp मध्ये 'Send' दाबा — नोंदणी पूर्ण होईल.");
