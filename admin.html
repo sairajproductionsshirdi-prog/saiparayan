@@ -63,6 +63,8 @@
   tbody tr:nth-child(even){background:#fffdf7}
   tbody tr:hover{background:#fdf3dd}
   .seva-tag{display:inline-block;background:var(--parchment);color:var(--maroon);border-radius:20px;padding:2px 10px;font-size:.78rem;font-weight:600}
+  .wa-btn{background:#128C4B;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap;display:inline-block;transition:background .2s}
+  .wa-btn:hover{background:#0e7a41}
   .empty{text-align:center;color:var(--ink-soft);padding:40px}
   .loading{text-align:center;color:var(--ink-soft);padding:40px}
   footer{text-align:center;color:var(--ink-soft);font-size:.8rem;padding:24px}
@@ -119,10 +121,10 @@
           <tr>
             <th>#</th><th>नोंदणी क्र.</th><th>दिनांक व वेळ</th><th>सेवा प्रकार</th><th>नाव</th><th>वय</th><th>लिंग</th>
             <th>मोबाईल</th><th>WhatsApp</th><th>गाव/शहर</th><th>सहभाग</th>
-            <th>वीणा कालावधी</th><th>उपलब्ध दिवस</th><th>पूर्वी सहभाग</th><th>ग्रंथ</th>
+            <th>वीणा कालावधी</th><th>उपलब्ध दिवस</th><th>पूर्वी सहभाग</th><th>ग्रंथ</th><th>पुष्टी (WhatsApp)</th>
           </tr>
         </thead>
-        <tbody id="rows"><tr><td colspan="15" class="loading">डेटा लोड होत आहे…</td></tr></tbody>
+        <tbody id="rows"><tr><td colspan="16" class="loading">डेटा लोड होत आहे…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -140,6 +142,20 @@
   var COL = "registrations";
   var FIELDS = ["seva","naam","vay","ling","mobile","whatsapp","gaav","sahbhag","kalavdhi","divas","purv","granth"];
   var all = [];   // loaded records
+
+  function toLatinDigits(s){ var dev="०१२३४५६७८९"; return String(s||"").replace(/[०-९]/g,function(c){return "0123456789"[dev.indexOf(c)];}); }
+  function waLink(r){
+    var num = toLatinDigits(r.mobile||r.whatsapp||"").replace(/\D/g,"");
+    if(num.length===10) num="91"+num;
+    var msg = "🙏 ॐ साई राम, "+(r.naam||"")+"!\n"
+      +"श्री साईसच्चरित पारायण सोहळा – शिर्डी २०२६ साठी आपली नोंदणी यशस्वीरीत्या झाली आहे.\n"
+      +"📋 नोंदणी क्रमांक: "+(r.regNo||"")+"\n"
+      +"🕉️ सेवा: "+(r.seva||"")+"\n"
+      +"📅 दिनांक: १३ – २१ ऑगस्ट २०२६\n"
+      +"📍 ठिकाण: साई आश्रम नं. १, शिर्डी\n"
+      +"– नाट्य रसिक मंच, शिर्डी";
+    return "https://wa.me/"+num+"?text="+encodeURIComponent(msg);
+  }
 
   var loginView = document.getElementById('loginView');
   var dashView  = document.getElementById('dashView');
@@ -187,7 +203,7 @@
   document.getElementById('refreshBtn').addEventListener('click', loadData);
 
   function loadData(){
-    document.getElementById('rows').innerHTML = '<tr><td colspan="15" class="loading">डेटा लोड होत आहे…</td></tr>';
+    document.getElementById('rows').innerHTML = '<tr><td colspan="16" class="loading">डेटा लोड होत आहे…</td></tr>';
     firebase.firestore().collection(COL).orderBy('ts','desc').get()
       .then(function(snap){
         all = [];
@@ -195,7 +211,7 @@
         buildFilters(); render();
       })
       .catch(function(err){
-        document.getElementById('rows').innerHTML = '<tr><td colspan="15" class="empty">लोड करता आले नाही: ' + (err && err.message ? err.message : err) + '</td></tr>';
+        document.getElementById('rows').innerHTML = '<tr><td colspan="16" class="empty">लोड करता आले नाही: ' + (err && err.message ? err.message : err) + '</td></tr>';
       });
   }
 
@@ -235,7 +251,7 @@
 
     // rows
     var tb = document.getElementById('rows');
-    if(!data.length){ tb.innerHTML = '<tr><td colspan="15" class="empty">कोणतीही नोंदणी नाही.</td></tr>'; return; }
+    if(!data.length){ tb.innerHTML = '<tr><td colspan="16" class="empty">कोणतीही नोंदणी नाही.</td></tr>'; return; }
     var html = '';
     data.forEach(function(r,i){
       html += '<tr>'
@@ -254,6 +270,7 @@
         + '<td>'+(r.divas||'')+'</td>'
         + '<td>'+(r.purv||'')+'</td>'
         + '<td>'+(r.granth||'')+'</td>'
+        + '<td><a class="wa-btn" href="'+waLink(r)+'" target="_blank" rel="noopener">📲 पाठवा</a></td>'
         + '</tr>';
     });
     tb.innerHTML = html;
