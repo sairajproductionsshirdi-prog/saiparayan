@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>नोंदणी डॅशबोर्ड — श्री साईसच्चरित पारायण सोहळा</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Rozha+One&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --gold:#C79A3B; --gold-bright:#E3B84A; --saffron:#E07B39; --maroon:#6B1F1A;
+    --maroon-deep:#4A130F; --cream:#FFF9EF; --parchment:#F4E9D4; --ink:#2c1e16;
+    --ink-soft:#6a5847; --line:#e6d8bf;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Mukta',sans-serif;background:var(--parchment);color:var(--ink);line-height:1.5}
+  .wrap{max-width:1200px;margin:0 auto;padding:20px}
+  h1,h2,h3{font-family:'Rozha One',serif;font-weight:400;color:var(--maroon)}
+
+  /* Top bar */
+  .top{background:linear-gradient(135deg,var(--maroon),var(--maroon-deep));color:var(--cream);padding:16px 0}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+  .top h1{color:var(--gold-bright);font-size:1.5rem;line-height:1.15}
+  .top small{display:block;color:rgba(244,233,212,.7);font-size:.8rem;font-family:'Mukta'}
+  .btn{font-family:'Mukta';font-weight:600;border:none;border-radius:10px;padding:10px 18px;cursor:pointer;font-size:.95rem;transition:all .2s}
+  .btn-gold{background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--maroon-deep)}
+  .btn-gold:hover{transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:var(--cream);border:1px solid rgba(227,184,74,.5)}
+  .btn-ghost:hover{background:rgba(227,184,74,.15)}
+
+  /* Login card */
+  .login{max-width:400px;margin:8vh auto;background:var(--cream);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:18px;padding:36px 30px;box-shadow:0 20px 50px -20px rgba(0,0,0,.4);text-align:center}
+  .login .om{color:var(--saffron);font-family:'Rozha One';font-size:1.1rem;margin-bottom:8px}
+  .login h2{font-size:1.5rem;margin-bottom:4px}
+  .login p{color:var(--ink-soft);font-size:.9rem;margin-bottom:22px}
+  .field{text-align:left;margin-bottom:14px}
+  .field label{display:block;font-size:.82rem;color:var(--ink-soft);margin-bottom:5px;font-weight:600}
+  .field input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font-family:'Mukta';font-size:1rem;background:#fff}
+  .field input:focus{outline:none;border-color:var(--gold)}
+  .login .btn{width:100%;margin-top:6px}
+  .err{color:#b3261e;font-size:.85rem;margin-top:12px;min-height:1.2em}
+  .setup-note{background:#fff8e6;border:1px solid #f0d98a;color:#7a5a12;font-size:.82rem;border-radius:10px;padding:12px;margin-top:18px;text-align:left;line-height:1.5}
+
+  /* Dashboard */
+  .hidden{display:none!important}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:22px 0}
+  .stat{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:16px 18px;text-align:center}
+  .stat b{display:block;font-family:'Rozha One';font-size:2rem;color:var(--maroon)}
+  .stat span{font-size:.82rem;color:var(--ink-soft)}
+  .stat.total{border-top:3px solid var(--gold)}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .toolbar input,.toolbar select{padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-family:'Mukta';font-size:.92rem;background:#fff}
+  .toolbar input{flex:1;min-width:180px}
+  .toolbar .btn{padding:9px 14px}
+  .muted{color:var(--ink-soft);font-size:.85rem;margin-left:auto}
+
+  .tablewrap{background:var(--cream);border:1px solid var(--line);border-radius:14px;overflow:auto;max-height:66vh}
+  table{width:100%;border-collapse:collapse;font-size:.86rem;white-space:nowrap}
+  thead th{position:sticky;top:0;background:var(--maroon);color:var(--cream);font-weight:600;padding:11px 12px;text-align:left;font-family:'Mukta'}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--line)}
+  tbody tr:nth-child(even){background:#fffdf7}
+  tbody tr:hover{background:#fdf3dd}
+  .seva-tag{display:inline-block;background:var(--parchment);color:var(--maroon);border-radius:20px;padding:2px 10px;font-size:.78rem;font-weight:600}
+  .empty{text-align:center;color:var(--ink-soft);padding:40px}
+  .loading{text-align:center;color:var(--ink-soft);padding:40px}
+  footer{text-align:center;color:var(--ink-soft);font-size:.8rem;padding:24px}
+  @media(max-width:600px){ .top h1{font-size:1.2rem} .stat b{font-size:1.6rem} }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginView">
+  <div class="login">
+    <div class="om">॥ ॐ साई राम ॥</div>
+    <h2>नोंदणी डॅशबोर्ड</h2>
+    <p>Admin Login · श्री साईसच्चरित पारायण सोहळा २०२६</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="admin@example.com" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button class="btn btn-gold" id="loginBtn">लॉगिन करा · Login</button>
+    <div class="err" id="loginErr"></div>
+    <div class="setup-note" id="setupNote"></div>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashView" class="hidden">
+  <div class="top">
+    <div class="wrap">
+      <h1>नोंदणी डॅशबोर्ड <small>श्री साईसच्चरित पारायण सोहळा, शिर्डी – २०२६</small></h1>
+      <div>
+        <button class="btn btn-gold" id="refreshBtn">↻ रिफ्रेश</button>
+        <button class="btn btn-ghost" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats" id="stats"></div>
+
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="🔍 नाव / मोबाईल / गाव शोधा…" />
+      <select id="filterSeva"><option value="">सर्व सेवा प्रकार</option></select>
+      <button class="btn btn-gold" id="exportBtn">⬇ Excel/CSV Export</button>
+      <span class="muted" id="count"></span>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>दिनांक व वेळ</th><th>सेवा प्रकार</th><th>नाव</th><th>वय</th><th>लिंग</th>
+            <th>मोबाईल</th><th>WhatsApp</th><th>गाव/शहर</th><th>सहभाग</th>
+            <th>वीणा कालावधी</th><th>उपलब्ध दिवस</th><th>पूर्वी सहभाग</th><th>ग्रंथ</th>
+          </tr>
+        </thead>
+        <tbody id="rows"><tr><td colspan="14" class="loading">डेटा लोड होत आहे…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <footer>©2026 SAIRAJ PRODUCTIONS, SHIRDI · डेटा Firebase मध्ये सुरक्षित आहे</footer>
+</div>
+
+<!-- Firebase SDK (compat) + shared config -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+(function(){
+  var COL = "registrations";
+  var FIELDS = ["seva","naam","vay","ling","mobile","whatsapp","gaav","sahbhag","kalavdhi","divas","purv","granth"];
+  var all = [];   // loaded records
+
+  var loginView = document.getElementById('loginView');
+  var dashView  = document.getElementById('dashView');
+  var loginErr  = document.getElementById('loginErr');
+  var setupNote = document.getElementById('setupNote');
+
+  // --- config sanity check ---
+  var configured = (typeof firebaseConfig !== 'undefined') && firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('PASTE') === -1;
+  if (!configured) {
+    setupNote.innerHTML = "⚙️ <b>Setup needed:</b> open <code>firebase-config.js</code> and paste your Firebase project config, then create an admin user in Firebase Console → Authentication.";
+  }
+
+  function fmtTs(ts){
+    if(!ts) return "";
+    try{
+      var d = new Date(ts);
+      return d.toLocaleString('en-GB', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    }catch(e){ return ts; }
+  }
+
+  // ---------- AUTH ----------
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('password').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+  function doLogin(){
+    loginErr.textContent = "";
+    if(!configured){ loginErr.textContent = "Firebase config not set (see note below)."; return; }
+    var email = document.getElementById('email').value.trim();
+    var pass  = document.getElementById('password').value;
+    if(!email || !pass){ loginErr.textContent = "Email आणि password भरा."; return; }
+    firebase.auth().signInWithEmailAndPassword(email, pass)
+      .catch(function(err){ loginErr.textContent = "Login failed: " + (err && err.message ? err.message : err); });
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', function(){ firebase.auth().signOut(); });
+
+  if (configured) {
+    firebase.auth().onAuthStateChanged(function(user){
+      if(user){ loginView.classList.add('hidden'); dashView.classList.remove('hidden'); loadData(); }
+      else    { dashView.classList.add('hidden'); loginView.classList.remove('hidden'); }
+    });
+  }
+
+  // ---------- LOAD ----------
+  document.getElementById('refreshBtn').addEventListener('click', loadData);
+
+  function loadData(){
+    document.getElementById('rows').innerHTML = '<tr><td colspan="14" class="loading">डेटा लोड होत आहे…</td></tr>';
+    firebase.firestore().collection(COL).orderBy('ts','desc').get()
+      .then(function(snap){
+        all = [];
+        snap.forEach(function(doc){ all.push(doc.data()); });
+        buildFilters(); render();
+      })
+      .catch(function(err){
+        document.getElementById('rows').innerHTML = '<tr><td colspan="14" class="empty">लोड करता आले नाही: ' + (err && err.message ? err.message : err) + '</td></tr>';
+      });
+  }
+
+  function buildFilters(){
+    var sel = document.getElementById('filterSeva');
+    var seen = {};
+    sel.innerHTML = '<option value="">सर्व सेवा प्रकार</option>';
+    all.forEach(function(r){ if(r.seva && !seen[r.seva]){ seen[r.seva]=1; var o=document.createElement('option'); o.value=r.seva; o.textContent=r.seva; sel.appendChild(o);} });
+  }
+
+  document.getElementById('search').addEventListener('input', render);
+  document.getElementById('filterSeva').addEventListener('change', render);
+
+  function filtered(){
+    var q = document.getElementById('search').value.trim().toLowerCase();
+    var sv = document.getElementById('filterSeva').value;
+    return all.filter(function(r){
+      if(sv && r.seva !== sv) return false;
+      if(!q) return true;
+      return [r.naam,r.mobile,r.whatsapp,r.gaav].some(function(x){ return (x||'').toLowerCase().indexOf(q) !== -1; });
+    });
+  }
+
+  // ---------- RENDER ----------
+  function render(){
+    var data = filtered();
+
+    // stats
+    var byType = {};
+    all.forEach(function(r){ var s=r.seva||'—'; byType[s]=(byType[s]||0)+1; });
+    var statsHtml = '<div class="stat total"><b>'+all.length+'</b><span>एकूण नोंदणी</span></div>';
+    Object.keys(byType).forEach(function(k){ statsHtml += '<div class="stat"><b>'+byType[k]+'</b><span>'+k+'</span></div>'; });
+    document.getElementById('stats').innerHTML = statsHtml;
+
+    // count
+    document.getElementById('count').textContent = data.length + ' / ' + all.length + ' दाखवत आहे';
+
+    // rows
+    var tb = document.getElementById('rows');
+    if(!data.length){ tb.innerHTML = '<tr><td colspan="14" class="empty">कोणतीही नोंदणी नाही.</td></tr>'; return; }
+    var html = '';
+    data.forEach(function(r,i){
+      html += '<tr>'
+        + '<td>'+(i+1)+'</td>'
+        + '<td>'+fmtTs(r.ts)+'</td>'
+        + '<td><span class="seva-tag">'+(r.seva||'')+'</span></td>'
+        + '<td>'+(r.naam||'')+'</td>'
+        + '<td>'+(r.vay||'')+'</td>'
+        + '<td>'+(r.ling||'')+'</td>'
+        + '<td>'+(r.mobile||'')+'</td>'
+        + '<td>'+(r.whatsapp||'')+'</td>'
+        + '<td>'+(r.gaav||'')+'</td>'
+        + '<td>'+(r.sahbhag||'')+'</td>'
+        + '<td>'+(r.kalavdhi||'')+'</td>'
+        + '<td>'+(r.divas||'')+'</td>'
+        + '<td>'+(r.purv||'')+'</td>'
+        + '<td>'+(r.granth||'')+'</td>'
+        + '</tr>';
+    });
+    tb.innerHTML = html;
+  }
+
+  // ---------- EXPORT ----------
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    var data = filtered();
+    var head = ["दिनांक","सेवा प्रकार","नाव","वय","लिंग","मोबाईल","WhatsApp","गाव/शहर","सहभाग","वीणा कालावधी","उपलब्ध दिवस","पूर्वी सहभाग","ग्रंथ"];
+    var lines = [head.join(",")];
+    data.forEach(function(r){
+      var row = [fmtTs(r.ts)].concat(FIELDS.map(function(f){ return r[f]; }));
+      lines.push(row.map(function(v){ v=(v==null?'':String(v)); return '"'+v.replace(/"/g,'""')+'"'; }).join(","));
+    });
+    var blob = new Blob(["\ufeff"+lines.join("\n")], {type:"text/csv;charset=utf-8;"});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "saiparayan-registrations.csv";
+    a.click();
+  });
+})();
+</script>
+</body>
+</html>

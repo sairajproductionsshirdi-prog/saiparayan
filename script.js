@@ -227,6 +227,15 @@ document.addEventListener('click', e=>{
     purv:get('पूर्वसहभाग'), granth:get('ग्रंथ')
   };
 
+  // Save to Firebase for the admin dashboard (silent, non-blocking)
+  try {
+    if (window.firebase && firebase.apps && firebase.apps.length) {
+      firebase.firestore().collection('registrations').add(
+        Object.assign({}, data, { ts: new Date().toISOString() })
+      ).catch(function(){});
+    }
+  } catch(e){}
+
   // नोंदणी WhatsApp Business वर पाठवा (9354001941)
   const regWa = "https://wa.me/" + CONFIG.regWhatsApp;
   window.open(regWa + "?text=" + encodeURIComponent(waMessage(data)), "_blank");
