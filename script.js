@@ -248,25 +248,21 @@ document.addEventListener('click', e=>{
     purv:get('पूर्वसहभाग'), granth:get('ग्रंथ')
   };
 
-  // Save to Firebase (admin dashboard) — primary destination
+  // 1) Open WhatsApp with the registration details (synchronous → avoids popup blocker)
+  var regWa = "https://wa.me/" + CONFIG.regWhatsApp;
+  window.open(regWa + "?text=" + encodeURIComponent(waMessage(data)), "_blank");
+
+  // 2) Save to Firebase (admin dashboard) in the background
   try {
     if (window.firebase && firebase.apps && firebase.apps.length) {
       firebase.firestore().collection('registrations').add(
         Object.assign({}, data, { ts: new Date().toISOString() })
-      ).then(function(){
-        showConfirm(data.regNo);
-        resetPanel(panel);
-      }).catch(function(err){
-        showToast("नोंदणी पाठवताना अडचण आली. कृपया पुन्हा प्रयत्न करा.");
-        console.error(err);
-      });
-      return;
+      ).catch(function(err){ console.error('Firebase save failed', err); });
     }
   } catch(e){}
-  // Fallback only if Firebase is unavailable → WhatsApp
-  const regWa = "https://wa.me/" + CONFIG.regWhatsApp;
-  window.open(regWa + "?text=" + encodeURIComponent(waMessage(data)), "_blank");
-  showToast("ॐ साई राम! उघडलेल्या WhatsApp मध्ये 'Send' दाबा — नोंदणी पूर्ण होईल.");
+
+  // 3) Show confirmation (registration number) + reset
+  showConfirm(data.regNo);
   resetPanel(panel);
 });
 
