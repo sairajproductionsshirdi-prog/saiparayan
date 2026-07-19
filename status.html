@@ -11,7 +11,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Mukta',sans-serif;background:var(--parchment);color:var(--ink);line-height:1.55;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:24px}
   h1,h2,h3{font-family:'Rozha One',serif;font-weight:400;color:var(--maroon)}
-  .card{width:100%;max-width:440px;background:var(--cream);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:20px;padding:30px 26px;box-shadow:0 24px 60px -24px rgba(0,0,0,.4);margin-top:5vh}
+  .card{width:100%;max-width:460px;background:var(--cream);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:20px;padding:30px 26px;box-shadow:0 24px 60px -24px rgba(0,0,0,.4);margin-top:5vh}
   .om{text-align:center;color:var(--saffron);font-family:'Rozha One';font-size:1.05rem}
   h1{text-align:center;font-size:1.5rem;margin:4px 0 2px}
   .sub{text-align:center;color:var(--ink-soft);font-size:.85rem;margin-bottom:22px}
@@ -22,22 +22,24 @@
   .btn:hover{transform:translateY(-1px)}
   .msg{margin-top:16px;text-align:center;font-size:.92rem;min-height:1.2em}
   .msg.err{color:#b3261e}
-  .result{margin-top:20px;display:none}
-  .result.show{display:block;animation:fade .3s}
+  #results{margin-top:18px;display:none}
+  #results.show{display:block;animation:fade .3s}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
-  .tick{width:56px;height:56px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--maroon-deep);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700}
-  .result h3{text-align:center;font-size:1.35rem;margin-bottom:2px}
-  .result .ok{text-align:center;color:#128C4B;font-weight:600;font-size:.9rem;margin-bottom:14px}
-  .rn{background:var(--maroon);border-radius:12px;padding:12px;text-align:center;margin-bottom:14px}
-  .rn span{display:block;font-size:.76rem;color:rgba(244,233,212,.75)}
-  .rn b{font-family:'Rozha One';font-size:1.6rem;letter-spacing:.05em;color:var(--gold-bright)}
-  .row{display:flex;justify-content:space-between;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);font-size:.92rem}
+  .rhead{text-align:center;margin-bottom:6px}
+  .rhead .tick{width:50px;height:50px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--maroon-deep);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700}
+  .rhead h3{font-size:1.3rem}
+  .rhead .ok{color:#128C4B;font-weight:600;font-size:.88rem;margin-bottom:4px}
+  .rcard{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px;background:#fffdf7}
+  .rn{background:var(--maroon);border-radius:10px;padding:9px;text-align:center;margin-bottom:10px}
+  .rn span{display:block;font-size:.72rem;color:rgba(244,233,212,.75)}
+  .rn b{font-family:'Rozha One';font-size:1.4rem;letter-spacing:.05em;color:var(--gold-bright)}
+  .row{display:flex;justify-content:space-between;gap:10px;padding:6px 2px;border-bottom:1px dashed var(--line);font-size:.9rem}
   .row:last-child{border-bottom:none}
   .row span{color:var(--ink-soft)}
   .row b{color:var(--ink);text-align:right;font-weight:600}
+  .again{background:none;border:none;color:var(--maroon);font-weight:600;cursor:pointer;font-family:'Mukta';margin-top:16px;width:100%;font-size:.9rem;text-decoration:underline}
   .foot{text-align:center;margin-top:18px;font-size:.78rem;color:var(--ink-soft)}
   .foot a{color:var(--maroon);font-weight:600}
-  .again{background:none;border:none;color:var(--maroon);font-weight:600;cursor:pointer;font-family:'Mukta';margin-top:14px;width:100%;font-size:.9rem;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -53,18 +55,8 @@
     <div class="msg" id="msg"></div>
   </div>
 
-  <div class="result" id="result">
-    <div class="tick">✓</div>
-    <h3>नोंदणी यशस्वी</h3>
-    <div class="ok">आपली नोंदणी नोंदवली गेली आहे ✅</div>
-    <div class="rn"><span>नोंदणी क्रमांक</span><b id="rRno">—</b></div>
-    <div class="row"><span>नाव</span><b id="rNaam">—</b></div>
-    <div class="row"><span>सेवा प्रकार</span><b id="rSeva">—</b></div>
-    <div class="row"><span>गाव / शहर</span><b id="rGaav">—</b></div>
-    <div class="row"><span>मोबाईल</span><b id="rMob">—</b></div>
-    <div class="row"><span>उपलब्ध दिवस</span><b id="rDivas">—</b></div>
-    <button class="again" id="againBtn">← पुन्हा तपासा</button>
-  </div>
+  <div id="results"></div>
+  <button class="again" id="againBtn" style="display:none">← पुन्हा तपासा</button>
 
   <div class="foot">
     कार्यक्रम: १३ – २१ ऑगस्ट २०२६ · साई आश्रम नं. १, शिर्डी<br>
@@ -81,6 +73,7 @@
   function toLatin(s){ var d="०१२३४५६७८९"; return String(s||"").replace(/[०-९]/g,function(c){return "0123456789"[d.indexOf(c)];}); }
   function digits(s){ return toLatin(s).replace(/\D/g,""); }
   function toDev(s){ return String(s).replace(/[0-9]/g,function(c){return "०१२३४५६७८९"[+c];}); }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   var ok = (typeof firebaseConfig !== "undefined") && firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE")===-1;
 
   function fail(m){ $("msg").textContent = m; $("msg").className = "msg err"; }
@@ -98,38 +91,55 @@
     var col = firebase.firestore().collection("registrations");
 
     if(isMobile){
-      var num = d.slice(-10);
-      var vals = [num, toDev(num)];
-      col.where("mobile","in",vals).limit(1).get().then(function(s){
-        if(!s.empty){ showDoc(s.docs[0]); return; }
-        col.where("whatsapp","in",vals).limit(1).get().then(function(s2){
-          if(!s2.empty){ showDoc(s2.docs[0]); }
-          else fail("या मोबाईल क्रमांकावर नोंदणी सापडली नाही.");
-        }).catch(qerr);
+      var num = d.slice(-10), vals = [num, toDev(num)];
+      Promise.all([
+        col.where("mobile","in",vals).limit(10).get(),
+        col.where("whatsapp","in",vals).limit(10).get()
+      ]).then(function(res){
+        var map = {}, list = [];
+        res.forEach(function(snap){ snap.forEach(function(doc){ if(!map[doc.id]){ map[doc.id]=1; list.push(doc); } }); });
+        if(list.length){ showResults(list); } else fail("या मोबाईल क्रमांकावर नोंदणी सापडली नाही.");
       }).catch(qerr);
     } else {
-      col.doc(raw.toUpperCase()).get().then(function(doc){
-        if(doc.exists){ showDoc(doc); } else fail("ही नोंदणी सापडली नाही. कृपया तपासा.");
+      var R = raw.toUpperCase();
+      col.doc(R).get().then(function(doc){
+        if(doc.exists){ showResults([doc]); return; }
+        col.where("regNo","in",[R, raw]).limit(1).get().then(function(s){
+          if(!s.empty){ showResults(s.docs); } else fail("ही नोंदणी सापडली नाही. कृपया तपासा.");
+        }).catch(qerr);
       }).catch(qerr);
     }
   }
 
-  function showDoc(doc){
+  function cardHTML(doc){
     var d = doc.data();
-    $("rRno").textContent = doc.id;
-    $("rNaam").textContent = d.naam || "—";
-    $("rSeva").textContent = d.seva || "—";
-    $("rGaav").textContent = d.gaav || "—";
-    $("rMob").textContent  = d.mobile || "—";
-    $("rDivas").textContent = d.divas || "—";
+    return '<div class="rcard">'
+      + '<div class="rn"><span>नोंदणी क्रमांक</span><b>'+esc(d.regNo||doc.id)+'</b></div>'
+      + '<div class="row"><span>नाव</span><b>'+esc(d.naam)+'</b></div>'
+      + '<div class="row"><span>सेवा प्रकार</span><b>'+esc(d.seva)+'</b></div>'
+      + '<div class="row"><span>गाव / शहर</span><b>'+esc(d.gaav)+'</b></div>'
+      + '<div class="row"><span>मोबाईल</span><b>'+esc(d.mobile)+'</b></div>'
+      + '<div class="row"><span>उपलब्ध दिवस</span><b>'+esc(d.divas)+'</b></div>'
+      + '</div>';
+  }
+
+  function showResults(docs){
+    var head = '<div class="rhead"><div class="tick">✓</div>'
+      + '<h3>नोंदणी यशस्वी</h3>'
+      + '<div class="ok">आपली नोंदणी नोंदवली गेली आहे ✅</div>'
+      + (docs.length>1 ? '<div style="font-size:.85rem;color:var(--ink-soft)">या क्रमांकावर '+toDev(docs.length)+' नोंदणी आढळल्या</div>' : '')
+      + '</div>';
+    $("results").innerHTML = head + docs.map(cardHTML).join("");
     $("form").style.display = "none";
-    $("result").classList.add("show");
+    $("results").classList.add("show");
+    $("againBtn").style.display = "block";
   }
 
   $("checkBtn").addEventListener("click", check);
   $("q").addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
   $("againBtn").addEventListener("click", function(){
-    $("result").classList.remove("show"); $("form").style.display="block";
+    $("results").classList.remove("show"); $("results").innerHTML="";
+    $("form").style.display="block"; $("againBtn").style.display="none";
     $("q").value=""; $("msg").textContent="";
   });
 })();
