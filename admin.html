@@ -65,6 +65,8 @@
   .seva-tag{display:inline-block;background:var(--parchment);color:var(--maroon);border-radius:20px;padding:2px 10px;font-size:.78rem;font-weight:600}
   .wa-btn{background:#128C4B;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap;display:inline-block;transition:background .2s}
   .wa-btn:hover{background:#0e7a41}
+  .del-btn{background:#fbeaea;color:#b3261e;border:1px solid #e7b7b3;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:.95rem;transition:background .2s}
+  .del-btn:hover{background:#f5d5d2}
   .empty{text-align:center;color:var(--ink-soft);padding:40px}
   .loading{text-align:center;color:var(--ink-soft);padding:40px}
   footer{text-align:center;color:var(--ink-soft);font-size:.8rem;padding:24px}
@@ -121,10 +123,10 @@
           <tr>
             <th>#</th><th>नोंदणी क्र.</th><th>दिनांक व वेळ</th><th>सेवा प्रकार</th><th>नाव</th><th>वय</th><th>लिंग</th>
             <th>मोबाईल</th><th>WhatsApp</th><th>गाव/शहर</th><th>सहभाग</th>
-            <th>वीणा कालावधी</th><th>उपलब्ध दिवस</th><th>पूर्वी सहभाग</th><th>ग्रंथ</th><th>पुष्टी (WhatsApp)</th>
+            <th>वीणा कालावधी</th><th>उपलब्ध दिवस</th><th>पूर्वी सहभाग</th><th>ग्रंथ</th><th>पुष्टी (WhatsApp)</th><th>हटवा</th>
           </tr>
         </thead>
-        <tbody id="rows"><tr><td colspan="16" class="loading">डेटा लोड होत आहे…</td></tr></tbody>
+        <tbody id="rows"><tr><td colspan="17" class="loading">डेटा लोड होत आहे…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -203,15 +205,15 @@
   document.getElementById('refreshBtn').addEventListener('click', loadData);
 
   function loadData(){
-    document.getElementById('rows').innerHTML = '<tr><td colspan="16" class="loading">डेटा लोड होत आहे…</td></tr>';
+    document.getElementById('rows').innerHTML = '<tr><td colspan="17" class="loading">डेटा लोड होत आहे…</td></tr>';
     firebase.firestore().collection(COL).orderBy('ts','desc').get()
       .then(function(snap){
         all = [];
-        snap.forEach(function(doc){ all.push(doc.data()); });
+        snap.forEach(function(doc){ all.push(Object.assign({__id: doc.id}, doc.data())); });
         buildFilters(); render();
       })
       .catch(function(err){
-        document.getElementById('rows').innerHTML = '<tr><td colspan="16" class="empty">लोड करता आले नाही: ' + (err && err.message ? err.message : err) + '</td></tr>';
+        document.getElementById('rows').innerHTML = '<tr><td colspan="17" class="empty">लोड करता आले नाही: ' + (err && err.message ? err.message : err) + '</td></tr>';
       });
   }
 
@@ -224,6 +226,23 @@
 
   document.getElementById('search').addEventListener('input', render);
   document.getElementById('filterSeva').addEventListener('change', render);
+
+  // delete a registration (with confirmation)
+  document.getElementById('rows').addEventListener('click', function(e){
+    var btn = e.target.closest('.del-btn'); if(!btn) return;
+    var id = btn.getAttribute('data-id'); if(!id) return;
+    var rec = null;
+    for(var k=0;k<all.length;k++){ if(all[k].__id===id){ rec=all[k]; break; } }
+    var label = rec ? ((rec.naam||'') + '  (' + (rec.regNo||id) + ')') : id;
+    if(!confirm('ही नोंदणी कायमची हटवायची?\n\n' + label + '\n\nही क्रिया पूर्ववत करता येणार नाही.')) return;
+    btn.textContent = '…'; btn.disabled = true;
+    firebase.firestore().collection('registrations').doc(id).delete()
+      .then(function(){
+        all = all.filter(function(x){ return x.__id !== id; });
+        buildFilters(); render();
+      })
+      .catch(function(err){ alert('हटवता आले नाही: ' + (err && err.message ? err.message : err)); btn.textContent='🗑️'; btn.disabled=false; });
+  });
 
   function filtered(){
     var q = document.getElementById('search').value.trim().toLowerCase();
@@ -251,7 +270,7 @@
 
     // rows
     var tb = document.getElementById('rows');
-    if(!data.length){ tb.innerHTML = '<tr><td colspan="16" class="empty">कोणतीही नोंदणी नाही.</td></tr>'; return; }
+    if(!data.length){ tb.innerHTML = '<tr><td colspan="17" class="empty">कोणतीही नोंदणी नाही.</td></tr>'; return; }
     var html = '';
     data.forEach(function(r,i){
       html += '<tr>'
@@ -271,6 +290,7 @@
         + '<td>'+(r.purv||'')+'</td>'
         + '<td>'+(r.granth||'')+'</td>'
         + '<td><a class="wa-btn" href="'+waLink(r)+'" target="_blank" rel="noopener">📲 पाठवा</a></td>'
+        + '<td><button class="del-btn" data-id="'+(r.__id||'')+'">🗑️</button></td>'
         + '</tr>';
     });
     tb.innerHTML = html;
