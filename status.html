@@ -16,8 +16,7 @@
   h1{text-align:center;font-size:1.5rem;margin:4px 0 2px}
   .sub{text-align:center;color:var(--ink-soft);font-size:.85rem;margin-bottom:22px}
   label{display:block;font-size:.82rem;color:var(--ink-soft);font-weight:600;margin:12px 0 5px}
-  input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:11px;font-family:'Mukta';font-size:1rem;background:#fff;text-transform:uppercase}
-  input#mob{text-transform:none}
+  input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:11px;font-family:'Mukta';font-size:1rem;background:#fff}
   input:focus{outline:none;border-color:var(--gold)}
   .btn{width:100%;margin-top:18px;border:none;border-radius:11px;padding:13px;font-family:'Mukta';font-weight:700;font-size:1rem;cursor:pointer;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--maroon-deep);transition:transform .15s}
   .btn:hover{transform:translateY(-1px)}
@@ -48,19 +47,10 @@
   <p class="sub">श्री साईसच्चरित पारायण सोहळा, शिर्डी – २०२६</p>
 
   <div id="form">
-    <label for="rno">नोंदणी क्रमांक</label>
-    <input id="rno" placeholder="SAI26-XXXXXX" autocomplete="off" />
-    <label for="mob">मोबाईल क्रमांक (पडताळणीसाठी)</label>
-    <input id="mob" type="tel" placeholder="१० अंकी क्रमांक" autocomplete="off" />
+    <label for="q">नोंदणी क्रमांक <span style="font-weight:400">किंवा</span> मोबाईल क्रमांक</label>
+    <input id="q" placeholder="SAI26-XXXXXX किंवा १० अंकी मोबाईल" autocomplete="off" />
     <button class="btn" id="checkBtn">तपासा · Check</button>
     <div class="msg" id="msg"></div>
-    <button class="again" id="noRnoBtn" style="margin-top:16px">मला नोंदणी क्रमांक माहित नाही?</button>
-    <div id="help" style="display:none;background:var(--parchment);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px;font-size:.88rem;line-height:1.6">
-      🙏 काळजी करू नका!<br>
-      • नोंदणीच्या वेळी WhatsApp वर पाठवलेल्या संदेशात आपला <b>नोंदणी क्रमांक</b> आहे — कृपया तो संदेश तपासा.<br>
-      • किंवा खालील बटणावर क्लिक करून आम्हाला WhatsApp करा, आम्ही आपला क्रमांक कळवू:
-      <a href="https://wa.me/917498585080?text=%F0%9F%99%8F%20%E0%A4%AE%E0%A4%BE%E0%A4%9D%E0%A4%BE%20%E0%A4%A8%E0%A5%8B%E0%A4%82%E0%A4%A6%E0%A4%A3%E0%A5%80%20%E0%A4%95%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE%E0%A4%82%E0%A4%95%20%E0%A4%B9%E0%A4%B0%E0%A4%B5%E0%A4%B2%E0%A4%BE%20%E0%A4%86%E0%A4%B9%E0%A5%87.%20%E0%A4%95%E0%A5%83%E0%A4%AA%E0%A4%AF%E0%A4%BE%20%E0%A4%95%E0%A4%B3%E0%A4%B5%E0%A4%BE.%0A%E0%A4%A8%E0%A4%BE%E0%A4%B5%3A%20%0A%E0%A4%AE%E0%A5%8B%E0%A4%AC%E0%A4%BE%E0%A4%88%E0%A4%B2%3A%20" target="_blank" class="btn" style="display:block;text-align:center;text-decoration:none;margin-top:12px">📲 WhatsApp वर विचारा</a>
-    </div>
   </div>
 
   <div class="result" id="result">
@@ -71,8 +61,9 @@
     <div class="row"><span>नाव</span><b id="rNaam">—</b></div>
     <div class="row"><span>सेवा प्रकार</span><b id="rSeva">—</b></div>
     <div class="row"><span>गाव / शहर</span><b id="rGaav">—</b></div>
+    <div class="row"><span>मोबाईल</span><b id="rMob">—</b></div>
     <div class="row"><span>उपलब्ध दिवस</span><b id="rDivas">—</b></div>
-    <button class="again" id="againBtn">← दुसरी नोंदणी तपासा</button>
+    <button class="again" id="againBtn">← पुन्हा तपासा</button>
   </div>
 
   <div class="foot">
@@ -89,43 +80,57 @@
   var $ = function(id){ return document.getElementById(id); };
   function toLatin(s){ var d="०१२३४५६७८९"; return String(s||"").replace(/[०-९]/g,function(c){return "0123456789"[d.indexOf(c)];}); }
   function digits(s){ return toLatin(s).replace(/\D/g,""); }
-
+  function toDev(s){ return String(s).replace(/[0-9]/g,function(c){return "०१२३४५६७८९"[+c];}); }
   var ok = (typeof firebaseConfig !== "undefined") && firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE")===-1;
+
+  function fail(m){ $("msg").textContent = m; $("msg").className = "msg err"; }
+  function qerr(){ fail("तपासताना अडचण आली. कृपया पुन्हा प्रयत्न करा."); }
 
   function check(){
     $("msg").textContent = ""; $("msg").className = "msg";
-    var rno = $("rno").value.trim().toUpperCase();
-    var mob = digits($("mob").value);
-    if(!rno){ fail("कृपया नोंदणी क्रमांक भरा."); return; }
-    if(mob.length < 10){ fail("कृपया १० अंकी मोबाईल क्रमांक भरा."); return; }
+    var raw = $("q").value.trim();
+    if(!raw){ fail("कृपया नोंदणी क्रमांक किंवा मोबाईल क्रमांक भरा."); return; }
     if(!ok){ fail("सेवा तात्पुरती उपलब्ध नाही."); return; }
     $("msg").textContent = "तपासत आहे…";
-    firebase.firestore().collection("registrations").doc(rno).get()
-      .then(function(doc){
-        if(!doc.exists){ fail("ही नोंदणी सापडली नाही. कृपया क्रमांक तपासा."); return; }
-        var d = doc.data();
-        var stored = digits(d.mobile) + "|" + digits(d.whatsapp);
-        if(stored.indexOf(mob) === -1){ fail("मोबाईल क्रमांक जुळत नाही."); return; }
-        show(rno, d);
-      })
-      .catch(function(){ fail("तपासताना अडचण आली. कृपया पुन्हा प्रयत्न करा."); });
+
+    var d = digits(raw);
+    var isMobile = d.length >= 10 && !/[a-zA-Z]/.test(raw);
+    var col = firebase.firestore().collection("registrations");
+
+    if(isMobile){
+      var num = d.slice(-10);
+      var vals = [num, toDev(num)];
+      col.where("mobile","in",vals).limit(1).get().then(function(s){
+        if(!s.empty){ showDoc(s.docs[0]); return; }
+        col.where("whatsapp","in",vals).limit(1).get().then(function(s2){
+          if(!s2.empty){ showDoc(s2.docs[0]); }
+          else fail("या मोबाईल क्रमांकावर नोंदणी सापडली नाही.");
+        }).catch(qerr);
+      }).catch(qerr);
+    } else {
+      col.doc(raw.toUpperCase()).get().then(function(doc){
+        if(doc.exists){ showDoc(doc); } else fail("ही नोंदणी सापडली नाही. कृपया तपासा.");
+      }).catch(qerr);
+    }
   }
-  function fail(m){ $("msg").textContent = m; $("msg").className = "msg err"; }
-  function show(rno, d){
-    $("rRno").textContent = rno;
+
+  function showDoc(doc){
+    var d = doc.data();
+    $("rRno").textContent = doc.id;
     $("rNaam").textContent = d.naam || "—";
     $("rSeva").textContent = d.seva || "—";
     $("rGaav").textContent = d.gaav || "—";
+    $("rMob").textContent  = d.mobile || "—";
     $("rDivas").textContent = d.divas || "—";
     $("form").style.display = "none";
     $("result").classList.add("show");
   }
-  $("noRnoBtn").addEventListener("click", function(){ var h=$("help"); h.style.display = h.style.display==="none" ? "block":"none"; });
+
   $("checkBtn").addEventListener("click", check);
-  $("mob").addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
+  $("q").addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
   $("againBtn").addEventListener("click", function(){
     $("result").classList.remove("show"); $("form").style.display="block";
-    $("rno").value=""; $("mob").value=""; $("msg").textContent="";
+    $("q").value=""; $("msg").textContent="";
   });
 })();
 </script>
