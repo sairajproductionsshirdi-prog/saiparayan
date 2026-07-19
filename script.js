@@ -255,7 +255,7 @@ document.addEventListener('click', e=>{
   // 2) Save to Firebase (admin dashboard) in the background
   try {
     if (window.firebase && firebase.apps && firebase.apps.length) {
-      firebase.firestore().collection('registrations').add(
+      firebase.firestore().collection('registrations').doc(data.regNo).set(
         Object.assign({}, data, { ts: new Date().toISOString() })
       ).catch(function(err){ console.error('Firebase save failed', err); });
     }

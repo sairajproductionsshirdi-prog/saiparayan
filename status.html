@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>नोंदणी तपासा — श्री साईसच्चरित पारायण सोहळा, शिर्डी २०२६</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Rozha+One&display=swap" rel="stylesheet" />
+<style>
+  :root{--gold:#C79A3B;--gold-bright:#E3B84A;--saffron:#E07B39;--maroon:#6B1F1A;--maroon-deep:#4A130F;--cream:#FFF9EF;--parchment:#F4E9D4;--ink:#2c1e16;--ink-soft:#6a5847;--line:#e6d8bf;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Mukta',sans-serif;background:var(--parchment);color:var(--ink);line-height:1.55;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:24px}
+  h1,h2,h3{font-family:'Rozha One',serif;font-weight:400;color:var(--maroon)}
+  .card{width:100%;max-width:440px;background:var(--cream);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:20px;padding:30px 26px;box-shadow:0 24px 60px -24px rgba(0,0,0,.4);margin-top:5vh}
+  .om{text-align:center;color:var(--saffron);font-family:'Rozha One';font-size:1.05rem}
+  h1{text-align:center;font-size:1.5rem;margin:4px 0 2px}
+  .sub{text-align:center;color:var(--ink-soft);font-size:.85rem;margin-bottom:22px}
+  label{display:block;font-size:.82rem;color:var(--ink-soft);font-weight:600;margin:12px 0 5px}
+  input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:11px;font-family:'Mukta';font-size:1rem;background:#fff;text-transform:uppercase}
+  input#mob{text-transform:none}
+  input:focus{outline:none;border-color:var(--gold)}
+  .btn{width:100%;margin-top:18px;border:none;border-radius:11px;padding:13px;font-family:'Mukta';font-weight:700;font-size:1rem;cursor:pointer;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--maroon-deep);transition:transform .15s}
+  .btn:hover{transform:translateY(-1px)}
+  .msg{margin-top:16px;text-align:center;font-size:.92rem;min-height:1.2em}
+  .msg.err{color:#b3261e}
+  .result{margin-top:20px;display:none}
+  .result.show{display:block;animation:fade .3s}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .tick{width:56px;height:56px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--maroon-deep);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700}
+  .result h3{text-align:center;font-size:1.35rem;margin-bottom:2px}
+  .result .ok{text-align:center;color:#128C4B;font-weight:600;font-size:.9rem;margin-bottom:14px}
+  .rn{background:var(--maroon);border-radius:12px;padding:12px;text-align:center;margin-bottom:14px}
+  .rn span{display:block;font-size:.76rem;color:rgba(244,233,212,.75)}
+  .rn b{font-family:'Rozha One';font-size:1.6rem;letter-spacing:.05em;color:var(--gold-bright)}
+  .row{display:flex;justify-content:space-between;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);font-size:.92rem}
+  .row:last-child{border-bottom:none}
+  .row span{color:var(--ink-soft)}
+  .row b{color:var(--ink);text-align:right;font-weight:600}
+  .foot{text-align:center;margin-top:18px;font-size:.78rem;color:var(--ink-soft)}
+  .foot a{color:var(--maroon);font-weight:600}
+  .again{background:none;border:none;color:var(--maroon);font-weight:600;cursor:pointer;font-family:'Mukta';margin-top:14px;width:100%;font-size:.9rem;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="om">॥ ॐ साई राम ॥</div>
+  <h1>नोंदणी तपासा</h1>
+  <p class="sub">श्री साईसच्चरित पारायण सोहळा, शिर्डी – २०२६</p>
+
+  <div id="form">
+    <label for="rno">नोंदणी क्रमांक</label>
+    <input id="rno" placeholder="SAI26-XXXXXX" autocomplete="off" />
+    <label for="mob">मोबाईल क्रमांक (पडताळणीसाठी)</label>
+    <input id="mob" type="tel" placeholder="१० अंकी क्रमांक" autocomplete="off" />
+    <button class="btn" id="checkBtn">तपासा · Check</button>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="tick">✓</div>
+    <h3>नोंदणी यशस्वी</h3>
+    <div class="ok">आपली नोंदणी नोंदवली गेली आहे ✅</div>
+    <div class="rn"><span>नोंदणी क्रमांक</span><b id="rRno">—</b></div>
+    <div class="row"><span>नाव</span><b id="rNaam">—</b></div>
+    <div class="row"><span>सेवा प्रकार</span><b id="rSeva">—</b></div>
+    <div class="row"><span>गाव / शहर</span><b id="rGaav">—</b></div>
+    <div class="row"><span>उपलब्ध दिवस</span><b id="rDivas">—</b></div>
+    <button class="again" id="againBtn">← दुसरी नोंदणी तपासा</button>
+  </div>
+
+  <div class="foot">
+    कार्यक्रम: १३ – २१ ऑगस्ट २०२६ · साई आश्रम नं. १, शिर्डी<br>
+    संपर्क: <a href="https://wa.me/917498585080" target="_blank">7498585080</a> · नाट्य रसिक मंच
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function toLatin(s){ var d="०१२३४५६७८९"; return String(s||"").replace(/[०-९]/g,function(c){return "0123456789"[d.indexOf(c)];}); }
+  function digits(s){ return toLatin(s).replace(/\D/g,""); }
+
+  var ok = (typeof firebaseConfig !== "undefined") && firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE")===-1;
+
+  function check(){
+    $("msg").textContent = ""; $("msg").className = "msg";
+    var rno = $("rno").value.trim().toUpperCase();
+    var mob = digits($("mob").value);
+    if(!rno){ fail("कृपया नोंदणी क्रमांक भरा."); return; }
+    if(mob.length < 10){ fail("कृपया १० अंकी मोबाईल क्रमांक भरा."); return; }
+    if(!ok){ fail("सेवा तात्पुरती उपलब्ध नाही."); return; }
+    $("msg").textContent = "तपासत आहे…";
+    firebase.firestore().collection("registrations").doc(rno).get()
+      .then(function(doc){
+        if(!doc.exists){ fail("ही नोंदणी सापडली नाही. कृपया क्रमांक तपासा."); return; }
+        var d = doc.data();
+        var stored = digits(d.mobile) + "|" + digits(d.whatsapp);
+        if(stored.indexOf(mob) === -1){ fail("मोबाईल क्रमांक जुळत नाही."); return; }
+        show(rno, d);
+      })
+      .catch(function(){ fail("तपासताना अडचण आली. कृपया पुन्हा प्रयत्न करा."); });
+  }
+  function fail(m){ $("msg").textContent = m; $("msg").className = "msg err"; }
+  function show(rno, d){
+    $("rRno").textContent = rno;
+    $("rNaam").textContent = d.naam || "—";
+    $("rSeva").textContent = d.seva || "—";
+    $("rGaav").textContent = d.gaav || "—";
+    $("rDivas").textContent = d.divas || "—";
+    $("form").style.display = "none";
+    $("result").classList.add("show");
+  }
+  $("checkBtn").addEventListener("click", check);
+  $("mob").addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
+  $("againBtn").addEventListener("click", function(){
+    $("result").classList.remove("show"); $("form").style.display="block";
+    $("rno").value=""; $("mob").value=""; $("msg").textContent="";
+  });
+})();
+</script>
+</body>
+</html>
